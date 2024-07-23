@@ -18,8 +18,8 @@ export class UsersController {
   }
 
   @Get(':login')
-  findOne(@Param('login') login: string) {
-    return this.usersService.findOne(login);
+  async findOne(@Param('login') login: string) {
+    return await this.usersService.findOne(login);
   }
 
   @Get(':login/import')

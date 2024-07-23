@@ -3,13 +3,17 @@ import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { ConfigModule } from '@nestjs/config';
 import { GithubModule } from 'src/github/github.module';
+import { UserRepository } from './users.repository';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from './entities/user.entity';
 
 @Module({
   imports: [
     ConfigModule,
-    GithubModule
+    GithubModule,
+    TypeOrmModule.forFeature([User])
   ],
   controllers: [UsersController],
-  providers: [UsersService]
+  providers: [UsersService, UserRepository]
 })
 export class UsersModule {}
