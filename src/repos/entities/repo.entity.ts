@@ -7,13 +7,21 @@ export class Repo {
     @PrimaryColumn()
     id: number;
 
-    @Column()
+    @Column({
+        length: 128
+    })
     name: string;
 
-    @Column()
+    @Column({
+        length: 256,
+        nullable: true
+    })
     description: string;
 
-    @Column()
+    @Column({
+        length: 32,
+        nullable: true
+    })
     language: string;
 
     @Column('timestamptz')

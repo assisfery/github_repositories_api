@@ -8,10 +8,15 @@ export class User {
     @PrimaryColumn()
     id: number;
 
-    @Column()
+    @Column({
+        length: 64
+    })
     login: string;
 
-    @Column()
+    @Column({
+        length: 256,
+        nullable: true
+    })
     avatar_url: string;
 
     @OneToMany(() => Repo, (repo) => repo.user)
