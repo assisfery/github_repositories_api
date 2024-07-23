@@ -23,8 +23,14 @@ export class UsersService {
     return `This action returns a #${login} user`;
   }
 
-  async importOne(login: string) {
-    const user = await this.githubService.findOneInGithub(login);
+  async importUser(login: string) {
+    const user = await this.githubService.findUser(login);
+
+    return user;
+  }
+
+  async importRepositories(login: string) {
+    const user = await this.githubService.findRepositories(login);
 
     return user;
   }
