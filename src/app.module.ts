@@ -5,6 +5,8 @@ import { AppService } from './app.service';
 import configuration from './config/configuration';
 import { UsersModule } from './users/users.module';
 import { GithubModule } from './github/github.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from './users/entities/user.entity';
 
 @Module({
   imports: [
@@ -12,7 +14,17 @@ import { GithubModule } from './github/github.module';
       load: [configuration],
     }),
     UsersModule,
-    GithubModule
+    GithubModule,
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: process.env.DB_HOST,
+      port: +process.env.DB_PORT,
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE,
+      entities: [User],
+      synchronize: (process.env.DB_SYNCRONIZE === "true"),
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
