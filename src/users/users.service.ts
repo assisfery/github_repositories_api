@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { NotFoundException } from '@nestjs/common/exceptions/not-found.exception';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -20,8 +21,10 @@ export class UsersService {
     return 'This action adds a new user';
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findAll() : Promise<User[]> {
+    const users = await this.userRepository.find();
+
+    return users;
   }
 
   async findOne(login: string) : Promise<User>{
@@ -38,9 +41,22 @@ export class UsersService {
   }
 
   async importUser(login: string) {
-    const user = await this.githubService.findUser(login);
+    const githubUser = await this.githubService.findUser(login);
 
+    const searchUuser = await this.userRepository.findOneBy({ id: githubUser.id });
 
+    if(searchUuser)
+    {
+      throw new HttpException(`Utilizador ${login} ja foi importado`, HttpStatus.BAD_REQUEST);
+    }
+
+    const user = this.userRepository.create({
+      id: githubUser.id,
+      login: githubUser.login,
+      avatar_url: githubUser.avatar_url,
+    });
+
+    await this.userRepository.save(user);
 
     return user;
   }
