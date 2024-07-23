@@ -4,6 +4,8 @@ import { NotFoundException } from '@nestjs/common/exceptions/not-found.exception
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GithubService } from 'src/github/github.service';
+import { Repo } from 'src/repos/entities/repo.entity';
+import { RepoRepository } from 'src/repos/repos.repository';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -14,7 +16,8 @@ export class UsersService {
 
   constructor(
     private readonly githubService: GithubService,
-    private readonly userRepository: UserRepository
+    private readonly userRepository: UserRepository,
+    private readonly repoRepository: RepoRepository
   ) {}
 
   create(createUserDto: CreateUserDto) {
@@ -59,6 +62,20 @@ export class UsersService {
     await this.userRepository.save(user);
 
     return user;
+  }
+
+  async getUserRepositories(login: string) : Promise<Repo[]>{
+    const user = await this.userRepository.findOneBy({
+      login: login
+    });
+
+    if(!user)
+    {
+      throw new NotFoundException(`Utilizador ${login} nao encontrado na base de dados, tente importar antes`);
+    }
+
+    const repos = await this.repoRepository.find();
+    return repos;
   }
 
   async importRepositories(login: string) {

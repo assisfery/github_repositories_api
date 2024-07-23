@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryColumn, Unique } from "typeorm";
+import { Repo } from "src/repos/entities/repo.entity";
+import { Column, Entity, OneToMany, PrimaryColumn, Unique } from "typeorm";
 
 @Entity('users')
 @Unique(["login"])
@@ -12,5 +13,8 @@ export class User {
 
     @Column()
     avatar_url: string;
+
+    @OneToMany(() => Repo, (repo) => repo.user)
+    repos: Repo[];
 
 }

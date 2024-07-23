@@ -7,6 +7,8 @@ import { UsersModule } from './users/users.module';
 import { GithubModule } from './github/github.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/entities/user.entity';
+import { ReposModule } from './repos/repos.module';
+import { Repo } from './repos/entities/repo.entity';
 
 @Module({
   imports: [
@@ -22,9 +24,10 @@ import { User } from './users/entities/user.entity';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [User],
+      entities: [User, Repo],
       synchronize: (process.env.DB_SYNCRONIZE === "true"),
     }),
+    ReposModule,
   ],
   controllers: [AppController],
   providers: [AppService],
