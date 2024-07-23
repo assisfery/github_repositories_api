@@ -20,18 +20,16 @@ export class UsersService {
     return `This action returns a #${login} user`;
   }
 
-  importOne(login: string) {
-    const user = this.findOneInGithub(login);
+  async importOne(login: string) {
+    const user = await this.findOneInGithub(login);
 
     return user;
   }
 
-  findOneInGithub(login: string) {
-    const gitApiUrl = this.configService.get<string>('github_api_url')
-    
-    
-
-    return gitApiUrl;
+  async findOneInGithub(login: string) {
+    const url = this.configService.get<string>('github_api_url');    
+    const response = await fetch(url + '/users/' + login);
+    return response.json();
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

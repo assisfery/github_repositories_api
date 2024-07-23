@@ -23,8 +23,8 @@ export class UsersController {
   }
 
   @Get(':login/import')
-  importOne(@Param('login') login: string) {
-    return this.usersService.importOne(login);
+  async importOne(@Param('login') login: string) {
+    return await this.usersService.importOne(login);
   }
 
   @Patch(':id')
