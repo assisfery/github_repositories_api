@@ -55,6 +55,7 @@ GET {{url}}/users/:user/repos/import
 ```
 GET {{url}}/users/:user/repos
 ```
+Podes usar o seguintes querystring como filtro **skip, take, name, description** e **language**
 
 <br/><br/>
 
