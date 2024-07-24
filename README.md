@@ -22,6 +22,10 @@ docker compose up
 ```
 http://localhost:3000
 ```
+Pode acesso o swagger no seguinte link
+```
+http://localhost:3000/api/
+```
 
 5. Acessar o pgadmin e usar as seguintes credenciais.
 
