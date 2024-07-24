@@ -18,6 +18,29 @@ cp .env.example .env
 docker compose up
 ```
 
+4. Acessar o API
+```
+http://localhost:3000
+```
+
+5. Acessar o pgadmin e usar as seguintes credenciais.
+
+**Email:** admin@admin.com
+
+**Palavra passe:** root
+```
+http://localhost:5050/login
+```
+
+COnfigurar um servidor:
+- Aceder ao Menu Object
+- Escoher o Register >> Server
+- Configurar com os seguintes dados
+  - Host name/address: db
+  - User name: root
+  - Password: root
+
+
 <br/><br/>
 
 ## APIs
