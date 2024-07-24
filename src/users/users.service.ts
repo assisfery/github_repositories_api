@@ -156,9 +156,7 @@ export class UsersService {
 
     const githubRepositories = await this.githubService.findRepositories(login);
 
-    for(let i = 0; i < githubRepositories.length; i++)
-    {
-      const githubRepo = githubRepositories[i];
+    await Promise.all(githubRepositories.map( async(githubRepo) => {
 
       let searchRepo = await this.repoRepository.findOneBy({
         id: githubRepo.id
@@ -166,7 +164,7 @@ export class UsersService {
 
       if(searchRepo)
       {
-        continue;
+        return;
       }
 
       const repo = this.repoRepository.create({
@@ -179,7 +177,8 @@ export class UsersService {
       });
   
       await this.repoRepository.save(repo);
-    }
+
+    }));
 
     return githubRepositories;
   }
