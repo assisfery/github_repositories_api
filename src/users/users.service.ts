@@ -107,6 +107,9 @@ export class UsersService {
     //   where: { user: { id: user.id }},
     // });
 
+    const take = getRepoFilterDto.take || 10;
+    const skip = getRepoFilterDto.skip || 0;
+
     let query = this.repoRepository.createQueryBuilder("repos");
     query.where({ user });
 
@@ -131,7 +134,10 @@ export class UsersService {
       });
     }
 
-    const repos = await query.getMany();
+    const repos = await query
+      .take(take)
+      .skip(skip)
+      .getMany();
 
     return repos;
   }
