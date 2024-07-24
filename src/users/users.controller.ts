@@ -3,6 +3,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { GetUserFilterDto } from './dto/get-user-filter.dto';
+import { GetRepoFilterDto } from 'src/repos/dto/get-repo-filter.dto';
 
 @Controller('users')
 export class UsersController {
@@ -29,8 +30,8 @@ export class UsersController {
   }
 
   @Get(':login/repos')
-  async getUserRepositories(@Param('login') login: string) {
-    return await this.usersService.getUserRepositories(login);
+  async getUserRepositories(@Param('login') login: string, @Query() getRepoFilterDto: GetRepoFilterDto) {
+    return await this.usersService.getUserRepositories(login, getRepoFilterDto);
   }
 
   @Get(':login/repos/import')

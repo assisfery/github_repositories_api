@@ -4,6 +4,7 @@ import { NotFoundException } from '@nestjs/common/exceptions/not-found.exception
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GithubService } from 'src/github/github.service';
+import { GetRepoFilterDto } from 'src/repos/dto/get-repo-filter.dto';
 import { Repo } from 'src/repos/entities/repo.entity';
 import { RepoRepository } from 'src/repos/repos.repository';
 import { Like } from 'typeorm';
@@ -90,7 +91,7 @@ export class UsersService {
     return user;
   }
 
-  async getUserRepositories(login: string) : Promise<Repo[]>{
+  async getUserRepositories(login: string, getRepoFilterDto: GetRepoFilterDto) : Promise<Repo[]>{
     this.logger.log(`Searching for user ${login} repositories in local database...`);
 
     let user = await this.userRepository.findOneBy({
@@ -102,9 +103,35 @@ export class UsersService {
       throw new NotFoundException(`Utilizador ${login} não foi encontrado na base de dados, tente importar antes`);
     }
 
-    const repos = await this.repoRepository.find({
-      where: { user: { id: user.id }},
-    });
+    // const repos = await this.repoRepository.find({
+    //   where: { user: { id: user.id }},
+    // });
+
+    let query = this.repoRepository.createQueryBuilder("repos");
+    query.where({ user });
+
+    if(getRepoFilterDto.name)
+    {
+      query.andWhere('LOWER(name) LIKE LOWER(:name)', {
+        name: `%${getRepoFilterDto.name}%`
+      });
+    }
+
+    if(getRepoFilterDto.description)
+    {
+      query.andWhere('LOWER(description) LIKE LOWER(:description)', {
+        description: `%${getRepoFilterDto.description}%`
+      });
+    }
+
+    if(getRepoFilterDto.language)
+    {
+      query.andWhere('language = :language', {
+        language: getRepoFilterDto.language
+      });
+    }
+
+    const repos = await query.getMany();
 
     return repos;
   }
