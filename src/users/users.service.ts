@@ -6,7 +6,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { GithubService } from 'src/github/github.service';
 import { Repo } from 'src/repos/entities/repo.entity';
 import { RepoRepository } from 'src/repos/repos.repository';
+import { Like } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
+import { GetUserFilterDto } from './dto/get-user-filter.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { UserRepository } from './users.repository';
@@ -26,8 +28,21 @@ export class UsersService {
   //   return 'This action adds a new user';
   // }
 
-  async findAll() : Promise<User[]> {
-    const users = await this.userRepository.find();
+  async findAll(getUserFilterDto: GetUserFilterDto) : Promise<User[]> {
+    let users = [];
+
+    if(getUserFilterDto.login)
+    {
+      users = await this.userRepository.find({
+        where: {
+          login: Like(`%${getUserFilterDto.login}%`)
+        }
+      });
+    }
+    else
+    {
+      users = await this.userRepository.find();
+    }
 
     return users;
   }
