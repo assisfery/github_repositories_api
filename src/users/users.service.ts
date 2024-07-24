@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { NotFoundException } from '@nestjs/common/exceptions/not-found.exception';
 import { ConfigService } from '@nestjs/config';
@@ -14,15 +14,17 @@ import { UserRepository } from './users.repository';
 @Injectable()
 export class UsersService {
 
+  private readonly logger = new Logger(UsersService.name);
+
   constructor(
     private readonly githubService: GithubService,
     private readonly userRepository: UserRepository,
     private readonly repoRepository: RepoRepository
   ) {}
 
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
-  }
+  // create(createUserDto: CreateUserDto) {
+  //   return 'This action adds a new user';
+  // }
 
   async findAll() : Promise<User[]> {
     const users = await this.userRepository.find();
@@ -30,27 +32,31 @@ export class UsersService {
     return users;
   }
 
-  async findOne(login: string) : Promise<User>{
+  async findOne(login: string) : Promise<User> {
+    this.logger.log(`Searching for user ${login} in local database...`);
+
     const user = await this.userRepository.findOneBy({
       login: login
     });
 
     if(!user)
     {
-      throw new NotFoundException(`Utilizador ${login} nao encontrado na base de dados, tente importar antes`);
+      throw new NotFoundException(`Utilizador ${login} não foi encontrado na base de dados, tente importar antes`);
     }
 
     return user;    
   }
 
   async importUser(login: string) {
+    this.logger.log(`Importing the user ${login} to local database...`);
+
     const githubUser = await this.githubService.findUser(login);
 
     const searchUser = await this.userRepository.findOneBy({ id: githubUser.id });
 
     if(searchUser)
     {
-      throw new HttpException(`Utilizador ${login} ja foi importado`, HttpStatus.BAD_REQUEST);
+      throw new HttpException(`Utilizador ${login} já foi importado`, HttpStatus.BAD_REQUEST);
     }
 
     const user = await this.saveUser(githubUser);
@@ -70,13 +76,15 @@ export class UsersService {
   }
 
   async getUserRepositories(login: string) : Promise<Repo[]>{
+    this.logger.log(`Searching for user ${login} repositories in local database...`);
+
     let user = await this.userRepository.findOneBy({
       login: login
     });
 
     if(!user)
     {
-      throw new NotFoundException(`Utilizador ${login} nao encontrado na base de dados, tente importar antes`);
+      throw new NotFoundException(`Utilizador ${login} não foi encontrado na base de dados, tente importar antes`);
     }
 
     const repos = await this.repoRepository.find({
@@ -87,6 +95,8 @@ export class UsersService {
   }
 
   async importRepositories(login: string) {
+    this.logger.log(`Importing repositories from the user ${login} to local database...`);
+
     let user = await this.userRepository.findOneBy({
       login: login
     });
@@ -149,11 +159,11 @@ export class UsersService {
     return githubRepositories;
   }
   
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
+  // update(id: number, updateUserDto: UpdateUserDto) {
+  //   return `This action updates a #${id} user`;
+  // }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
-  }
+  // remove(id: number) {
+  //   return `This action removes a #${id} user`;
+  // }
 }
