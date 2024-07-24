@@ -1,0 +1,151 @@
+{
+	"info": {
+		"_postman_id": "f4c103a3-98a8-454c-9127-c32c8745512f",
+		"name": "github_repositories_api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12296418"
+	},
+	"item": [
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "Find User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/users/:user",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								":user"
+							],
+							"variable": [
+								{
+									"key": "user",
+									"value": "assisfery"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Import User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/users/:user/import",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								":user",
+								"import"
+							],
+							"variable": [
+								{
+									"key": "user",
+									"value": "assisfery"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/users",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "repos",
+			"item": [
+				{
+					"name": "Get User Repos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/users/:user/repos",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								":user",
+								"repos"
+							],
+							"variable": [
+								{
+									"key": "user",
+									"value": "assisfery"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Import User Repositories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/users/:user/repos/import",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								":user",
+								"repos",
+								"import"
+							],
+							"variable": [
+								{
+									"key": "user",
+									"value": "assisfery"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Index",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}",
+					"host": [
+						"{{url}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
