@@ -30,20 +30,23 @@ export class UsersService {
   // }
 
   async findAll(getUserFilterDto: GetUserFilterDto) : Promise<User[]> {
-    let users = [];
+
+    const take = getUserFilterDto.take || 10;
+    const skip = getUserFilterDto.skip || 0;
+
+    let query = this.userRepository.createQueryBuilder("users");
 
     if(getUserFilterDto.login)
     {
-      users = await this.userRepository.find({
-        where: {
-          login: Like(`%${getUserFilterDto.login}%`)
-        }
-      });
+      query.where({
+        login: Like(`%${getUserFilterDto.login}%`)
+      });      
     }
-    else
-    {
-      users = await this.userRepository.find();
-    }
+
+    const users = await query
+      .take(take)
+      .skip(skip)
+      .getMany();
 
     return users;
   }
@@ -103,10 +106,6 @@ export class UsersService {
       throw new NotFoundException(`Utilizador ${login} não foi encontrado na base de dados, tente importar antes`);
     }
 
-    // const repos = await this.repoRepository.find({
-    //   where: { user: { id: user.id }},
-    // });
-
     const take = getRepoFilterDto.take || 10;
     const skip = getRepoFilterDto.skip || 0;
 
@@ -156,28 +155,6 @@ export class UsersService {
     }
 
     const githubRepositories = await this.githubService.findRepositories(login);
-
-    // githubRepositories.forEach(async (githubRepo) => {
-
-    //   let searchRepo = await this.repoRepository.findOneBy({
-    //     id: githubRepo.id
-    //   });
-
-    //   if(searchRepo)
-    //     return;
-
-    //   const repo = this.repoRepository.create({
-    //     id: githubRepo.id,
-    //     name: githubRepo.name.substring(0, 128),
-    //     description: githubRepo.description.substring(0, 256),
-    //     language: githubRepo.language.substring(0, 32),
-    //     created_at: githubRepo.created_at,
-    //     user,
-    //   });
-  
-    //   await this.repoRepository.save(repo);
-
-    // });
 
     for(let i = 0; i < githubRepositories.length; i++)
     {
